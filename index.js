@@ -15,7 +15,7 @@ document.addEventListener('submit', async (event) => {
         const userId = localStorage.getItem('userId'); // Get the user ID from local storage
 
         try {
-            const response = await fetch('http://127.0.0.1:5000/add_comment', {
+            const response = await fetch('http://127.0.0.1:5001/add_comment', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

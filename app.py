@@ -1,9 +1,11 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify,url_for
 from flask_cors import CORS
 from pymongo import MongoClient
 import uuid
 from datetime import datetime
 from flask_bcrypt import Bcrypt
+import os
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 CORS(app)
@@ -14,6 +16,21 @@ client = MongoClient('mongodb+srv://hajrazawwarmalik:7KnkNxNRfuHxttSa@instagraml
 db = client['instagram_lite']
 users_collection = db['users']
 posts_collection = db['posts']
+
+# Configure upload folder and allowed extensions
+UPLOAD_FOLDER = 'static/uploads'  # Folder where images will be saved
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}  # Allowed image file extensions
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER  # Set the folder for Flask to use
+
+# Ensure the upload folder exists, if not, create it
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+# Function to check if the file has an allowed extension
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 # Registration API (add this)
 @app.route('/register', methods=['POST'])
@@ -42,26 +59,49 @@ def login():
 # Upload Post API
 @app.route('/upload', methods=['POST'])
 def upload():
-    data = request.get_json()
-    post = {
-        "_id": str(uuid.uuid4()),
-        "user_id": data['user_id'],
-        "caption": data['caption'],
-        "media_url": data['media_url'],
-        "created_at": datetime.utcnow(),
-        "likes": 0,
-        "comments": []
-    }
-    posts_collection.insert_one(post)
-    return jsonify({"message": "Post uploaded successfully!"}), 201
+    if 'image' not in request.files:
+        return jsonify({"message": "No file part"}), 400  # If no file is sent
+    
+    file = request.files['image']  # Get the file from the request
+    caption = request.form.get('caption')  # Get the caption text from the form
+    user_id = request.form.get('user_id')  # Get the user ID from the form
+
+    if file.filename == '':
+        return jsonify({"message": "No selected file"}), 400  # If the file is empty
+    
+    if file and allowed_file(file.filename):  # Check if the file has an allowed extension
+        # Secure the filename to avoid malicious files
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)  # Path to save the file
+        
+        file.save(filepath)  # Save the file to the folder
+
+        # Save the post details to the database
+        post = {
+            "_id": str(uuid.uuid4()),  # Generate a unique post ID
+            "user_id": user_id,
+            "caption": caption,
+            "media_url": filepath,  # Save the file path to the database
+            "created_at": datetime.utcnow(),
+            "likes": 0,
+            "comments": []  # Start with no comments
+        }
+        posts_collection.insert_one(post)  # Insert the post into MongoDB
+
+        return jsonify({"message": "Post uploaded successfully!"}), 201  # Success response
+    else:
+        return jsonify({"message": "Invalid file type"}), 400  # If the file type is not allowed
+
 
 # Get Feed API
 @app.route('/feed', methods=['GET'])
 def feed():
-    posts = list(posts_collection.find({}).sort("created_at", -1))
+    posts = list(posts_collection.find({}).sort("created_at", -1))  # Get posts sorted by time
     for post in posts:
-        post['_id'] = str(post['_id'])
-    return jsonify(posts), 200
+        post['_id'] = str(post['_id'])  # Convert MongoDB ObjectId to string
+        # Correct the media_url so it can be used in the frontend
+        post['media_url'] = url_for('static', filename='uploads/' + post['media_url'].split('/')[-1])
+    return jsonify(posts), 200  # Return posts in the feed
 # GET USER PROFILE
 @app.route('/get_user/<user_id>', methods=['GET'])
 def get_user(user_id):
@@ -125,5 +165,35 @@ def update_profile():
         print(f"Error updating profile: {e}")
         return jsonify({"message": "Failed to update profile. Please try again later."}, 500)
     
+# Add Comment API
+@app.route('/add_comment', methods=['POST'])
+def add_comment():
+    data = request.get_json()
+    post_id = data.get('post_id')
+    user_id = data.get('user_id')
+    text = data.get('text')
+
+    if not post_id or not user_id or not text:
+        return jsonify({"message": "Missing required fields"}), 400
+
+    try:
+        comment = {
+            "user_id": user_id,
+            "text": text,
+            "timestamp": datetime.utcnow()
+        }
+        result = posts_collection.update_one(
+            {"_id": post_id},
+            {"$push": {"comments": comment}}
+        )
+
+        if result.modified_count > 0:
+            return jsonify({"message": "Comment added successfully!"}), 201
+        else:
+            return jsonify({"message": "Post not found"}), 404
+    except Exception as e:
+        print(f"Error adding comment: {e}")
+        return jsonify({"message": "Failed to add comment. Please try again later."}), 500
+
 if __name__ == "__main__":
     app.run(debug=True, port=5001) 
