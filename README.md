@@ -1,8 +1,4 @@
 # Instagram-Lite-Clone
-Sure! Here's a clean, **professional** version of the **GitHub README** for your **SnapConnect** project — properly structured for GitHub:
-
----
-
 # 📸 SnapConnect
 
 A lightweight, minimal Instagram Lite Clone built with Flask, MongoDB, and basic HTML/CSS/JS.
