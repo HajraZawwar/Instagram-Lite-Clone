@@ -4,8 +4,7 @@ from schemas.post_schema import PostSchema
 from bson import ObjectId
 
 router = APIRouter()
-
-post_db = PostDB(db)  # assuming db is initialized somewhere
+post_db = PostDB(db) 
 
 @router.post("/create")
 async def create_post(post: PostSchema):

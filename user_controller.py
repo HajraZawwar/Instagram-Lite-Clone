@@ -5,7 +5,7 @@ from bson import ObjectId
 
 router = APIRouter()
 
-user_db = UserDB(db)  # assuming db is initialized somewhere
+user_db = UserDB(db)  
 
 @router.post("/register")
 async def create_user(user: UserSchema):
