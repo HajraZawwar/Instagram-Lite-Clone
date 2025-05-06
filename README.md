@@ -1,7 +1,3 @@
-Certainly! Here's an updated `README.md` file for your [Instagram-Lite-Clone](https://github.com/HajraZawwar/Instagram-Lite-Clone) project. This version reflects the integration of Flask, MongoDB, AWS S3, and environment variable management using `python-dotenv`.
-
----
-
 # 📸 Instagram Lite Clone
 
 A lightweight Instagram clone built with Flask, MongoDB, and AWS S3. This application allows users to register, log in, upload images, and view a feed of posts.
