@@ -21,7 +21,8 @@ bucket_name = os.getenv('myawsbucket8777')
 
 MONGO_URI = os.getenv("mongodb+srv://hajrazawwarmalik:<db_password>@instagramlitecluster.tlxvfb7.mongodb.net/?retryWrites=true&w=majority&appName=InstagramLiteCluster")
 S3_BUCKET_NAME = os.getenv("myawsbucket8777")
-AWS_ACCESS_KEY_ID = os.getenv("AKIAZURXUCXMN2EDQ55Q")
-AWS_SECRET_ACCESS_KEY = os.getenv("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")
-REGION_NAME = os.getenv("REGION_NAME", "Europe (Stockholm) eu-north-1")
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_REGION = os.getenv('AWS_REGION')
+SECRET_KEY = os.getenv('SECRET_KEY')
 USE_DYNAMODB = os.getenv("USE_DYNAMODB", "False") == "True"
