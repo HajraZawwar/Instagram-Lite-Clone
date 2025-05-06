@@ -1,166 +1,167 @@
-# Instagram-Lite-Clone
-# 📸 SnapConnect
-
-A lightweight, minimal Instagram Lite Clone built with Flask, MongoDB, and basic HTML/CSS/JS.
+Certainly! Here's an updated `README.md` file for your [Instagram-Lite-Clone](https://github.com/HajraZawwar/Instagram-Lite-Clone) project. This version reflects the integration of Flask, MongoDB, AWS S3, and environment variable management using `python-dotenv`.
 
 ---
 
-## 📋 Table of Contents
-- [About the Project](#about-the-project)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Database Design](#database-design)
-- [UI/UX Screens](#uiux-screens)
-- [Data Flow](#data-flow)
-- [Setup Instructions](#setup-instructions)
-- [Current Progress](#current-progress)
-- [Next Steps](#next-steps)
+# 📸 Instagram Lite Clone
+
+A lightweight Instagram clone built with Flask, MongoDB, and AWS S3. This application allows users to register, log in, upload images, and view a feed of posts.
 
 ---
 
-## 📖 About the Project
-SnapConnect is a mini social media platform that allows users to:
-- Register and log in securely
-- Upload posts with captions and images
-- View a feed of latest posts
-- Comment on posts
-- Update their user profile
+## 🚀 Features
 
-Built as part of an academic project to demonstrate a scalable backend system with a NoSQL database.
+* User Registration and Authentication
+* Image Uploads to AWS S3
+* Post Feed Display
+* Secure Credential Management with Environment Variables
+* RESTful API Endpoints([flask-s3.readthedocs.io][1])
 
 ---
 
-## ✨ Features
-- 🔐 User Registration and Login
-- 🖼️ Post Upload (Image + Caption)
-- 📰 Feed Display (Newest First)
-- 💬 Comment on Posts
-- 🧑‍💼 Profile Update (Username, Bio, Profile Picture)
+## 🧰 Tech Stack
+
+* **Backend:** Flask, Flask-PyMongo
+* **Database:** MongoDB Atlas
+* **Cloud Storage:** AWS S3
+* **Environment Management:** python-dotenv
+* **Testing:** pytest([MongoDB][2], [Medium][3])
 
 ---
 
-## 🛠️ Tech Stack
-- **Backend:** Python (Flask)
-- **Database:** MongoDB (Atlas Cloud DB)
-- **Password Security:** Bcrypt (hashed storage)
-- **Frontend:** HTML, CSS, JavaScript
-- **APIs:** RESTful APIs
-- **Authentication:** Session-less, Token-based (future enhancement)
+## 📁 Project Structure
 
----
-
-## 🗄️ Database Design
-
-### Database: `instagram_lite`
-
-| Collection | Fields |
-|:-----------|:-------|
-| **users** | `_id`, `email`, `password`, `username`, `full_name`, `bio`, `profile_picture_url` |
-| **posts** | `_id`, `user_id`, `caption`, `media_url`, `created_at`, `likes`, `comments` |
-
-### Example Document (users)
-```json
-{
-  "_id": "bd72a256-c71c-4578-bd82-3b124a9856f0",
-  "email": "user@example.com",
-  "password": "$2b$12$....",
-  "username": "cooluser",
-  "full_name": "Cool User",
-  "bio": "Love photography!",
-  "profile_picture_url": "https://pics.com/image.jpg"
-}
 ```
 
-### Example Document (posts)
-```json
-{
-  "_id": "fdd2a344-2b8e-4c19-8d0b-438b7a4e3fcd",
-  "user_id": "bd72a256-c71c-4578-bd82-3b124a9856f0",
-  "caption": "Beautiful sunset! 🌇",
-  "media_url": "https://pics.com/sunset.jpg",
-  "created_at": "2025-04-26T18:30:00Z",
-  "likes": 0,
-  "comments": []
-}
+instagram-lite-clone/
+├── app.py
+├── config.py
+├── requirements.txt
+├── .env
+├── templates/
+│   └── ...
+├── static/
+│   └── ...
+├── routes/
+│   └── ...
+├── models/
+│   └── ...
+└── tests/
+    └── test_config.py
 ```
 
----
 
-## 🎨 UI/UX Screens
-
-### Login Page
-- **Fields:** Email, Password
-- **Actions:** Login button, Sign-Up link
-
-### Sign-Up Page
-- **Fields:** Email, Username, Password, Confirm Password
-- **Actions:** Sign-Up button, Login link
-
-(Frontend screenshots will be uploaded soon!)
-
----
-
-## 🔄 Data Flow
-
-- **Registration:** New user registers ➔ `/register` API ➔ New user saved in `users` collection
-- **Login:** Existing user logs in ➔ `/login` API ➔ Password verified
-- **Uploading Post:** User submits caption and image ➔ `/upload` API ➔ Post saved in `posts` collection
-- **Feed Loading:** Client calls `/feed` ➔ Backend fetches posts ➔ Posts displayed
-- **Commenting:** User comments ➔ `/add_comment` API ➔ Comment pushed to the post document
-- **Profile Update:** User updates info ➔ `/update_profile` ➔ User document updated
 
 ---
 
 ## ⚙️ Setup Instructions
 
-1. **Clone the repository**
+###
+
 ```bash
-git clone https://github.com/your-username/snapconnect.git
-cd snapconnect
+git clone https://github.com/HajraZawwar/Instagram-Lite-Clone.git
+cd Instagram-Lite-Clone
 ```
 
-2. **Install required packages**
+([YouTube][4])
+
+### 2. Create and Activate a Virtual Environment
+
 ```bash
-pip install flask flask-cors flask-bcrypt pymongo
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-3. **Run the Flask app**
+
+
+### 3. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+
+
+### 4. Configure Environment Variables
+
+Create a `.env` file in the root directory and add the following:
+
+```ini
+# MongoDB
+MONGO_URI=mongodb+srv://<username>:<password>@<cluster-url>/insta_db?retryWrites=true&w=majority
+
+# AWS
+AWS_ACCESS_KEY_ID=your-access-key-id
+AWS_SECRET_ACCESS_KEY=your-secret-access-key
+AWS_REGION=eu-north-1
+S3_BUCKET_NAME=myawsbucket8777
+
+# Flask
+SECRET_KEY=your-flask-secret-key
+USE_DYNAMODB=False
+```
+
+
+
+**Note:** Ensure that `.env` is added to `.gitignore` to prevent sensitive information from being committed.
+
+### 5. Run the Application
+
 ```bash
 python app.py
 ```
 
-4. **Access the application**
-- Backend API will run at: `http://localhost:5001/`
-- Frontend HTML files can be opened directly in the browser (or served with Flask if integrated).
+
+
+The application will be accessible at `http://localhost:5000/`.
 
 ---
 
-## 🚀 Current Progress
+## 🧪 Running Tests
 
-| Module         | Status          |
-|----------------|-----------------|
-| User Registration | ✅ Completed |
-| User Login        | ✅ Completed |
-| Post Upload       | ✅ Completed |
-| Feed Retrieval    | ✅ Completed |
-| Comment System    | ✅ Completed |
-| Profile Update    | ✅ Completed |
-| Image Upload via File Browser | 🛠️ In Progress |
+To run the test suite:
 
----
+```bash
+pytest
+```
 
-## 🛤️ Next Steps
-- Improve image upload functionality (local upload and cloud storage)
-- Add likes functionality
-- Create post details page
-- Improve frontend responsiveness
-- Secure API endpoints
-- Deployment (Render, Vercel, etc.)
+
+
+This will execute all tests located in the `tests/` directory.
 
 ---
 
-## 📢 License
-This project is for academic purposes. Feel free to use or contribute!
+## 📦 Deployment
+
+For deploying the application:
+
+* **AWS EC2:** Host the Flask application.
+* **MongoDB Atlas:** Use as the cloud database service.
+* **AWS S3:** Store and serve uploaded images.
+
+Ensure that all environment variables are properly set in your production environment.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please fork the repository and submit a pull request for any enhancements or bug fixes.
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+For more details on integrating Flask with MongoDB and AWS S3, you can refer to this [project guide](https://medium.com/@jdiasdacostalima/project-idea-creating-a-flask-app-with-mongodb-aws-and-git-f59973631a56).([Medium][3])
+
+---
+
+[1]: https://flask-s3.readthedocs.io/?utm_source=chatgpt.com "Flask-S3 — flask-S3 0.3.2 documentation"
+[2]: https://www.mongodb.com/resources/products/compatibilities/setting-up-flask-with-mongodb?utm_source=chatgpt.com "Flask-PyMongo With MongoDB Atlas Guide"
+[3]: https://medium.com/%40jdiasdacostalima/project-idea-creating-a-flask-app-with-mongodb-aws-and-git-f59973631a56?utm_source=chatgpt.com "Project Idea: Creating a Flask App with MongoDB, AWS, and Git"
+[4]: https://www.youtube.com/watch?v=tJxMPvzkCyo&utm_source=chatgpt.com "Flask and MongoDB w/ Flask-pymongo | Project Setup - YouTube"
 
 ---
 
